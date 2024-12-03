@@ -28,7 +28,7 @@ After creating a conda environment, the above packages could be installed by run
 conda install (package-name)[=package-version]
 ```
 
-or
+or 
 
 ```bash
 pip install (package-name)[==package-version]
@@ -37,6 +37,16 @@ pip install (package-name)[==package-version]
 We recommend installing Pytorch following the instructions on [Pytorch's official website](https://pytorch.org/) for different operating systems. With normal network conditions, installation only takes a few minutes.
 
 All our experiments are conducted on an Nvidia RTX 3090 GPU on the Ubuntu 20.04 OS with CUDA 12.2. The code can generally be successfully run as long as the Conda environment is consistent.
+
+### Quick Installation
+
+We have also released MetaQ as a Python package on [PyPI](https://pypi.org/project/MetaQ/). To install MetaQ, run
+
+```bash
+pip install MetaQ-sc
+```
+
+Note that to correctly install pytorch to enable GPU acceleration, we recommend first prepare the conda environment following the above instructions, and then install MetaQ.
 
 ## Usage
 
@@ -52,6 +62,26 @@ python MetaQ.py --data_path $data_file_path --data_type $data_type --metacell_nu
 - `--data_type [str(s)]` refers to the type of the input data, choosing from `["RNA", "ADT", "ATAC"]`. Note the multiple data types need to be provided consistently with the multi-omics input data.
 - `--metacell_num [int]` denotes the target number of metacells.
 - `--save_name [str]` sets the file name prefix when saving the results.
+
+### For Pip Installation
+
+If you have installed MetaQ via pip, you could alternatively run the following script to perform metacell inference:
+
+```python
+from MetaQ_sc import run_metaq
+
+run_metaq(
+    data_path=[
+        "./data/HumanFetalAtlas_25K.h5ad",
+    ],  # the path to the input h5ad data
+    data_type=[
+        "RNA",
+    ],  # the type of the input data
+    metacell_num=500,  # the target number of metacells
+    save_name="HumanAtlas",  # the file name prefix when saving the results
+)
+
+```
 
 ### Optional Configs
 
