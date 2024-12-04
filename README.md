@@ -1,5 +1,7 @@
 # MetaQ
 
+[![DOI](https://zenodo.org/badge/897895114.svg)](https://doi.org/10.5281/zenodo.14271479)
+
 This is the implementation of the paper "MetaQ: fast, scalable and accurate metacell inference via deep single-cell quantization". To reduce the file size, we attach the Human Fetal Atlas subset of 25,000 cells with submission. The other datasets used in this work have been uploaded to [Google Drive](https://drive.google.com/drive/folders/1-utA_n5UXQirN9SK5eXAptIYZ6swMCs2?usp=sharing).
 
 ## Dependency
