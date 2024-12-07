@@ -42,7 +42,7 @@ All our experiments are conducted on an Nvidia RTX 3090 GPU on the Ubuntu 20.04 
 
 ### Quick Installation
 
-We have also released MetaQ as a Python package on [PyPI](https://pypi.org/project/MetaQ/). To install MetaQ, run
+We have also released MetaQ as a Python package on [PyPI](https://pypi.org/project/MetaQ-sc/). To install MetaQ, run
 
 ```bash
 pip install MetaQ-sc
