@@ -7,7 +7,7 @@ authors = [
 description = "The implementation of the paper 'MetaQ: fast, scalable and accurate metacell inference via deep single-cell quantization'. Please refer to the paper and code repository (https://github.com/XLearning-SCU/MetaQ) for more details."
 version = "0.1.0"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.6"
 dependencies = [
     "torch==2.1.1",
     "numpy==1.26.0",
