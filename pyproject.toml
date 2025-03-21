@@ -1,19 +1,16 @@
 [project]
 name = "metaq"
-authors = [
-    { name = "Yunfan Li" },
-    { name = "noam teyssier" },
-]
+authors = [{ name = "Yunfan Li" }, { name = "noam teyssier" }]
 description = "The implementation of the paper 'MetaQ: fast, scalable and accurate metacell inference via deep single-cell quantization'. Please refer to the paper and code repository (https://github.com/XLearning-SCU/MetaQ) for more details."
 version = "0.1.0"
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.9"
 dependencies = [
-    "torch==2.1.1",
-    "numpy==1.26.0",
-    "alive-progress==3.1.5",
-    "scanpy==1.9.6",
-    "scipy==1.11.3",
-    "scikit-learn==1.1.3",
-    "einops==0.7.0",
+  "torch==2.1.1",
+  "numpy==1.26.0",
+  "alive-progress==3.1.5",
+  "scanpy==1.9.6",
+  "scipy==1.11.3",
+  "scikit-learn==1.1.3",
+  "einops==0.7.0",
 ]
