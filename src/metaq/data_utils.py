@@ -77,9 +77,15 @@ def preprocess(adata, data_type):
 def load_data(
     data_path: list[str],
     data_type: list[str],
-    metacell_num: int,
-    batch_size: int,
+    metacell_num: int | None = None,
+    metacell_frac: float | None = None,
+    batch_size: int = 512,
 ):
+    if not metacell_num and not metacell_frac:
+        raise ValueError(
+            "Must provide either a metacell_num or a metacell_frac to proceed"
+        )
+
     print("=======Loading and Preprocessing Data=======")
 
     num_omics = len(data_path)
@@ -89,23 +95,27 @@ def load_data(
     sf_list = []
     raw_list = []
     adata_list = []
+    num_list = []
     for i in range(num_omics):
         data_path = data_path[i]
         data_type = data_type[i]
 
         adata = sc.read_h5ad(data_path)
         x, sf, raw, adata = preprocess(adata, data_type)
+        num = metacell_num if metacell_num else int(x.shape[0] * metacell_frac)
 
         x_list.append(x)
         sf_list.append(sf)
         raw_list.append(raw)
         adata_list.append(adata)
+        num_list.append(num)
 
         print(data_path, "loaded with shape", list(x.shape))
 
     dataset = MetaQDataset(x_list, sf_list, raw_list)
-    if metacell_num > 1000 and batch_size <= 512:
-        batch_size = 4096
+    for n in num_list:
+        if metacell_num > 1000 and batch_size <= 512:
+            batch_size = 4096
     dataloader_train = DataLoader(
         dataset=dataset,
         batch_size=batch_size,
