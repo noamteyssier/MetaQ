@@ -1,9 +1,11 @@
-import torch
+from typing import Optional
+
+import anndata as ad
 import numpy as np
 import scanpy as sc
-import anndata as ad
+import torch
 from scipy import sparse
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader, Dataset
 
 
 class MetaQDataset(Dataset):
@@ -77,8 +79,8 @@ def preprocess(adata, data_type):
 def load_data(
     data_path: list[str],
     data_type: list[str],
-    metacell_num: int | None = None,
-    metacell_frac: float | None = None,
+    metacell_num: Optional[int] = None,
+    metacell_frac: Optional[float] = None,
     batch_size: int = 512,
 ):
     if not metacell_num and not metacell_frac:
