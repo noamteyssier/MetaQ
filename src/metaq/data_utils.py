@@ -114,7 +114,7 @@ def load_data(
 
     dataset = MetaQDataset(x_list, sf_list, raw_list)
     for n in num_list:
-        if metacell_num > 1000 and batch_size <= 512:
+        if n > 1000 and batch_size <= 512:
             batch_size = 4096
     dataloader_train = DataLoader(
         dataset=dataset,
