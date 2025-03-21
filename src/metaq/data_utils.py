@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 import scanpy as sc
+import anndata as ad
 from scipy import sparse
 from torch.utils.data import Dataset, DataLoader
 
@@ -73,10 +74,15 @@ def preprocess(adata, data_type):
     return x, sf, raw, adata_
 
 
-def load_data(args):
+def load_data(
+    data_path: list[str],
+    data_type: list[str],
+    metacell_num: int,
+    batch_size: int,
+):
     print("=======Loading and Preprocessing Data=======")
 
-    num_omics = len(args.data_path)
+    num_omics = len(data_path)
     print("Data of", num_omics, "omics in total")
 
     x_list = []
@@ -84,8 +90,8 @@ def load_data(args):
     raw_list = []
     adata_list = []
     for i in range(num_omics):
-        data_path = args.data_path[i]
-        data_type = args.data_type[i]
+        data_path = data_path[i]
+        data_type = data_type[i]
 
         adata = sc.read_h5ad(data_path)
         x, sf, raw, adata = preprocess(adata, data_type)
@@ -98,11 +104,11 @@ def load_data(args):
         print(data_path, "loaded with shape", list(x.shape))
 
     dataset = MetaQDataset(x_list, sf_list, raw_list)
-    if args.metacell_num > 1000 and args.batch_size <= 512:
-        args.batch_size = 4096
+    if metacell_num > 1000 and batch_size <= 512:
+        batch_size = 4096
     dataloader_train = DataLoader(
         dataset=dataset,
-        batch_size=args.batch_size,
+        batch_size=batch_size,
         shuffle=True,
         drop_last=True,
         num_workers=4,
@@ -110,7 +116,7 @@ def load_data(args):
     )
     dataloader_eval = DataLoader(
         dataset=dataset,
-        batch_size=args.batch_size * 4,
+        batch_size=batch_size * 4,
         shuffle=False,
         drop_last=False,
         num_workers=4,
@@ -121,38 +127,19 @@ def load_data(args):
     return adata_list, dataloader_train, dataloader_eval, input_dims
 
 
-def compute_metacell(adata, meta_ids, args):
+def compute_metacell(
+    adata: ad.AnnData,
+    meta_ids: np.ndarray,
+):
     meta_ids = meta_ids.astype(int)
-    non_empty_metacell = np.zeros(meta_ids.max() + 1).astype(bool)
-    non_empty_metacell[np.unique(meta_ids)] = True
+    nz_metacell = np.unique(meta_ids)
 
     data = adata.X
-    data_meta = np.stack(
-        [data[meta_ids == i].mean(axis=0) for i in range(meta_ids.max() + 1)]
+    data_meta = np.stack([data[meta_ids == i].mean(axis=0) for i in nz_metacell])
+    metacell_adata = sc.AnnData(
+        data_meta,
+        obs=None,
+        var=adata.var,  # copy variables from original anndata
     )
-    data_meta = data_meta[non_empty_metacell]
-    metacell_adata = sc.AnnData(data_meta)
-
-    if args.type_key in adata.obs_keys():
-        type_int = torch.from_numpy(adata.obs[args.type_key].cat.codes.values).long()
-        type_map = {
-            i: adata.obs[args.type_key].cat.categories[i]
-            for i in range(type_int.max() + 1)
-        }
-        type_one_hot = torch.zeros(type_int.shape[0], type_int.max() + 1)
-        type_one_hot.scatter_(1, type_int.unsqueeze(1), 1)
-        type_meta = (
-            torch.stack(
-                [
-                    type_one_hot[meta_ids == i].mean(dim=0)
-                    for i in range(meta_ids.max() + 1)
-                ]
-            )
-            .argmax(dim=1)
-            .numpy()
-        )
-        type_meta = np.array([type_map[i] for i in type_meta])
-        type_meta = type_meta[non_empty_metacell]
-        metacell_adata.obs[args.type_key] = type_meta
 
     return metacell_adata

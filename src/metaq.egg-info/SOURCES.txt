@@ -1,0 +1,15 @@
+LICENSE
+README.md
+pyproject.toml
+src/metaq/MetaQ.py
+src/metaq/__init__.py
+src/metaq/data_utils.py
+src/metaq/engine.py
+src/metaq/eval_utils.py
+src/metaq/model.py
+src/metaq/train_utils.py
+src/metaq.egg-info/PKG-INFO
+src/metaq.egg-info/SOURCES.txt
+src/metaq.egg-info/dependency_links.txt
+src/metaq.egg-info/requires.txt
+src/metaq.egg-info/top_level.txt

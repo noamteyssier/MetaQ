@@ -10,12 +10,13 @@ import matplotlib
 import numpy as np
 import scanpy as sc
 import seaborn as sns
-from model import MetaQ
 from matplotlib import rcParams
 from alive_progress import alive_bar
-from engine import train_one_epoch, warm_one_epoch, inference
-from data_utils import load_data, compute_metacell
-from eval_utils import (
+
+from .model import MetaQ
+from .engine import train_one_epoch, warm_one_epoch, inference
+from .data_utils import load_data, compute_metacell
+from .eval_utils import (
     plot_metacell_umap,
     plot_metacell_size,
     plot_celltype_purity,
@@ -191,9 +192,9 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    assert len(args.data_path) == len(
-        args.data_type
-    ), "Number of data path and data type mismatch"
+    assert len(args.data_path) == len(args.data_type), (
+        "Number of data path and data type mismatch"
+    )
 
     # Randomization
     random.seed(args.random_seed)

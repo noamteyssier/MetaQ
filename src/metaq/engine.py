@@ -1,6 +1,7 @@
 import torch
 import numpy as np
-from model import reconstruction_loss
+
+from .model import reconstruction_loss
 
 
 def train_one_epoch(
