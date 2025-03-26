@@ -138,7 +138,7 @@ def load_data(
         dataset=dataset,
         batch_size=batch_size,
         shuffle=True,
-        drop_last=True,  # Required true because of indexing
+        drop_last=True,  # Required true for training only
         num_workers=num_workers,
         pin_memory=True,
     )
@@ -146,7 +146,7 @@ def load_data(
         dataset=dataset,
         batch_size=batch_size * 4,
         shuffle=False,
-        drop_last=True,  # Requires true because of indexing
+        drop_last=False,  # Requires false because of indexing
         num_workers=num_workers,
     )
 
