@@ -82,6 +82,7 @@ def load_data(
     metacell_num: Optional[int] = None,
     metacell_frac: Optional[float] = None,
     batch_size: int = 512,
+    num_workers: int = 4,
 ):
     if not metacell_num and not metacell_frac:
         raise ValueError(
@@ -116,22 +117,35 @@ def load_data(
 
     dataset = MetaQDataset(x_list, sf_list, raw_list)
     for n in num_list:
-        if n > 1000 and batch_size <= 512:
+        if n < 512:
+            batch_size = 128
+        elif n > 10000 and batch_size <= 512:
             batch_size = 4096
+
+    drop_last = (
+        dataset.cell_num > batch_size * 4
+    )  # Only drop last if we have plenty of cells
+
+    if dataset.cell_num < batch_size:
+        raise ValueError(
+            f"Dataset has {dataset.cell_num} cells but batch size is {batch_size}. "
+            f"Reduce batch size or use a larger dataset."
+        )
+
     dataloader_train = DataLoader(
         dataset=dataset,
         batch_size=batch_size,
         shuffle=True,
-        drop_last=True,
-        num_workers=4,
+        drop_last=drop_last,
+        num_workers=num_workers,
         pin_memory=True,
     )
     dataloader_eval = DataLoader(
         dataset=dataset,
         batch_size=batch_size * 4,
         shuffle=False,
-        drop_last=False,
-        num_workers=4,
+        drop_last=drop_last,
+        num_workers=num_workers,
     )
 
     input_dims = [x.shape[1] for x in x_list]

@@ -1,5 +1,5 @@
-import torch
 import numpy as np
+import torch
 
 from .model import reconstruction_loss
 
@@ -12,6 +12,14 @@ def train_one_epoch(
     epoch,
     device,
 ):
+    # Check for empty dataloader
+    if len(dataloader) == 0:
+        raise ValueError(
+            "Empty dataloader detected. This likely means your batch size is larger "
+            "than the number of samples in your dataset. Please reduce batch size or "
+            "set drop_last=False in your DataLoader."
+        )
+
     model.train(True)
     optimizer.zero_grad()
 
