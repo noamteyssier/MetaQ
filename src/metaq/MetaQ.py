@@ -192,9 +192,9 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    assert len(args.data_path) == len(args.data_type), (
-        "Number of data path and data type mismatch"
-    )
+    assert len(args.data_path) == len(
+        args.data_type
+    ), "Number of data path and data type mismatch"
 
     # Randomization
     random.seed(args.random_seed)
