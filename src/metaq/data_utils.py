@@ -117,14 +117,16 @@ def load_data(
 
     dataset = MetaQDataset(x_list, sf_list, raw_list)
     for n in num_list:
-        if n < 512:
+        if n < 512 and n > 128:
             batch_size = 128
+        elif n < 128 and n > 64:
+            batch_size = 64
+        elif n < 64 and n > 32:
+            batch_size = 32
+        elif n <= 32:
+            raise ValueError(f"Invalid number of cells: {n}")
         elif n > 10000 and batch_size <= 512:
             batch_size = 4096
-
-    drop_last = (
-        dataset.cell_num > batch_size * 4
-    )  # Only drop last if we have plenty of cells
 
     if dataset.cell_num < batch_size:
         raise ValueError(
@@ -136,7 +138,7 @@ def load_data(
         dataset=dataset,
         batch_size=batch_size,
         shuffle=True,
-        drop_last=drop_last,
+        drop_last=True,  # Required true because of indexing
         num_workers=num_workers,
         pin_memory=True,
     )
@@ -144,7 +146,7 @@ def load_data(
         dataset=dataset,
         batch_size=batch_size * 4,
         shuffle=False,
-        drop_last=drop_last,
+        drop_last=True,  # Requires true because of indexing
         num_workers=num_workers,
     )
 

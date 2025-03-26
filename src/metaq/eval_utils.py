@@ -1,11 +1,11 @@
-import torch
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scanpy as sc
 import seaborn as sns
-import matplotlib.pyplot as plt
-from scipy import sparse
+import torch
 from alive_progress import alive_bar
+from scipy import sparse
 from sklearn.metrics import balanced_accuracy_score
 
 
@@ -36,7 +36,7 @@ def pairwise_correlation(data, save_name):
     try:
         corr = np.load(save_path)
         print("Correlation Loaded from:", save_path)
-    except:
+    except FileNotFoundError:
         print("Computing Pairwise Correlation...")
         corr = np.zeros((cell_num, cell_num), dtype=np.float16)
         chunk_size = 5000
@@ -167,8 +167,8 @@ def plot_metacell_umap(adata, save_name, meta_size=10, cell_size=0.5):
         legend=None,
     )
 
-    plt.xlabel(f"UMAP1")
-    plt.ylabel(f"UMAP2")
+    plt.xlabel("UMAP1")
+    plt.ylabel("UMAP2")
     plt.title("Metacell Assignment")
     plt.tight_layout()
 
