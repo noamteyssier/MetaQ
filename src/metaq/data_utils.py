@@ -81,9 +81,13 @@ def filter_anndata(
     min_umi: Optional[int] = None,
     min_genes: Optional[int] = None,
 ) -> sc.AnnData:
-    if min_umi > 0:
+    if min_umi is not None:
+        if min_umi < 0:
+            raise ValueError("min_umi must be non-negative")
         sc.pp.filter_cells(adata, min_counts=min_umi, inplace=True)
-    if min_genes > 0:
+    if min_genes is not None:
+        if min_genes < 0:
+            raise ValueError("min_genes must be non-negative")
         sc.pp.filter_cells(adata, min_genes=min_genes, inplace=True)
     return adata
 
