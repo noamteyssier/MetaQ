@@ -82,7 +82,7 @@ def filter_anndata(
     min_genes: Optional[int] = None,
 ) -> sc.AnnData:
     if min_umi > 0:
-        sc.pp.filter_cells(adata, min_umi=min_umi, inplace=True)
+        sc.pp.filter_cells(adata, min_counts=min_umi, inplace=True)
     if min_genes > 0:
         sc.pp.filter_cells(adata, min_genes=min_genes, inplace=True)
     return adata
