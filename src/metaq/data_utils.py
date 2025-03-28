@@ -120,7 +120,7 @@ def load_data(
         adata = sc.read_h5ad(data_path)
 
         # Apply cell_level filtering
-        adata = filter_anndata(adata, data_type, min_umi=min_umi, min_genes=min_genes)
+        adata = filter_anndata(adata, min_umi=min_umi, min_genes=min_genes)
 
         # Apply preprocessing transformations
         x, sf, raw, adata = preprocess(adata, data_type)
