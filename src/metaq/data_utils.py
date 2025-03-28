@@ -76,6 +76,18 @@ def preprocess(adata, data_type):
     return x, sf, raw, adata_
 
 
+def filter_anndata(
+    adata: sc.AnnData,
+    min_umi: Optional[int] = None,
+    min_genes: Optional[int] = None,
+) -> sc.AnnData:
+    if min_umi > 0:
+        sc.pp.filter_cells(adata, min_umi=min_umi, inplace=True)
+    if min_genes > 0:
+        sc.pp.filter_cells(adata, min_genes=min_genes, inplace=True)
+    return adata
+
+
 def load_data(
     data_path: list[str],
     data_type: list[str],
@@ -83,6 +95,8 @@ def load_data(
     metacell_frac: Optional[float] = None,
     batch_size: int = 512,
     num_workers: int = 4,
+    min_umi: Optional[int] = None,
+    min_genes: Optional[int] = None,
 ):
     if not metacell_num and not metacell_frac:
         raise ValueError(
@@ -104,7 +118,13 @@ def load_data(
         data_type = data_type[i]
 
         adata = sc.read_h5ad(data_path)
+
+        # Apply cell_level filtering
+        adata = filter_anndata(adata, data_type, min_umi=min_umi, min_genes=min_genes)
+
+        # Apply preprocessing transformations
         x, sf, raw, adata = preprocess(adata, data_type)
+
         num = metacell_num if metacell_num else int(x.shape[0] * metacell_frac)
 
         x_list.append(x)
